@@ -9,6 +9,10 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 import { useState, useEffect, useRef } from "react";
 
+import LeftBar from './components/leftBar.js';
+import RightBar from './components/rightBar';
+import { signOut } from 'firebase/auth';
+
 firebase.initializeApp({
   apiKey: "AIzaSyCwclLuSoHn-hy1eQF9_KEDuVuJAmLobkM",
   authDomain: "fwitter-a80b0.firebaseapp.com",
@@ -42,6 +46,8 @@ function Fweet(props){
   const { text, uid } = props.message;
   return <p>{text}</p>
 }
+
+
 function Fwitter(){
   const messagesRef = firestore.collection("Fweets");
   const query = messagesRef.orderBy('createdAt').limit(25);
@@ -50,8 +56,10 @@ function Fwitter(){
 
   return(
     <>
-      <div>
+      <div className='middle'>
+        <LeftBar user = {auth.currentUser} logout = {SignOut} />
         {messages && messages.map(msg => <Fweet key = {msg.id} message ={msg}/>)}
+        <RightBar />
       </div>
     </>
   )

@@ -1,0 +1,51 @@
+
+
+.leftbar{
+    width: 300px;
+    background-color: grey;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    justify-content: space-between;
+}
+
+#pfp{
+    border-radius: 100px;
+    width: 70px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profileInfo{
+    display: flex;
+    gap: 5px;
+}
+
+.leftbar button{
+    font-family: 'Courier New', Courier, monospace;
+    border: none;
+    font-size: 25px;
+    background-color: grey;
+    /* width: 60px; */
+}
+
+#fweetbtn{
+    background-color: blue;
+    color: white;
+    padding: 15px;
+    width: 150px;
+    border-radius: 70px;
+}
+
+#signOut{
+    font-size: 15px;
+    /* width:60px; */
+    color: white;
+}
