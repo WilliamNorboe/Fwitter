@@ -1,13 +1,36 @@
 import './leftBar.css';
+import { useState, useEffect, useRef } from "react";
 
-function leftBar(props){
+
+
+function FweetBox(props){
+
+    const [formValue, setFormValue] = useState('');
+
+    return(
+      <div className='fweet'>
+      <button className='close' onClick={()=>{props.open(false)}}>X</button>
+      <p>Fweet</p>
+      <form>
+        <textarea id="fweetText" value={formValue} onChange={(e)=>setFormValue(e.target.value)} />
+        <button id = "submitFweet" onClick={(e)=>{e.preventDefault(); props.sendFweet(e, formValue, setFormValue)}}>Fweet</button>
+      </form>
+    </div>
+    )
+  }
+
+
+function LeftBar(props){
+
+    const [fweetEdit, setFweetEdit] = useState(false);
 
 
     return(
     <div className='leftbar'>
+        {fweetEdit ? <FweetBox open = {setFweetEdit} sendFweet = {props.sendFweet} /> : <></>}
         <div className="buttons">
             <button>Home</button>
-            <button id = "fweetbtn">Fweet</button>
+            <button id = "fweetbtn" onClick={()=>{setFweetEdit(true)}}>Fweet</button>
         </div>
 
         <div className='profileInfo'>
@@ -21,4 +44,4 @@ function leftBar(props){
     )
 }
 
-export default leftBar
+export default LeftBar

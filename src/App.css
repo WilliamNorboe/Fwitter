@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
   height: 100%;
   /* background-color: blue; */
 }
@@ -18,3 +18,6 @@ section{
   display: flex;
   justify-content: center;
 }
+
+
+

@@ -8,10 +8,11 @@ import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 import { useState, useEffect, useRef } from "react";
+import { signOut } from 'firebase/auth';
 
 import LeftBar from './components/leftBar.js';
 import RightBar from './components/rightBar';
-import { signOut } from 'firebase/auth';
+import Fweets from './components/fweets';
 
 firebase.initializeApp({
   apiKey: "AIzaSyCwclLuSoHn-hy1eQF9_KEDuVuJAmLobkM",
@@ -42,36 +43,43 @@ function SignOut(){
   )
 }
 
-function Fweet(props){
-  const { text, uid } = props.message;
-  return <p>{text}</p>
-}
-
 
 function Fwitter(){
   const messagesRef = firestore.collection("Fweets");
-  const query = messagesRef.orderBy('createdAt').limit(25);
-
+  const query = messagesRef.orderBy('createdAt', 'desc').limit(25);
   const [messages] = useCollectionData(query, {idField: 'id'})
+
+  const sendFweet = async(e, formValue, setFormValue) =>{
+    const { uid, photoURL} = auth.currentUser;
+    let l = (Date.now().toString(36) + Math.random().toString(36).substr(2));
+    await messagesRef.add({
+      text: formValue,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid,
+      msgID: l,
+      photoURL
+    });
+    setFormValue('');
+    document.querySelector(".close").click();
+  }
 
   return(
     <>
       <div className='middle'>
-        <LeftBar user = {auth.currentUser} logout = {SignOut} />
-        {messages && messages.map(msg => <Fweet key = {msg.id} message ={msg}/>)}
+        <LeftBar user = {auth.currentUser} logout = {SignOut} sendFweet = {sendFweet}/>
+        <Fweets messages = {messages} />
         <RightBar />
       </div>
     </>
   )
 }
+
+
 function App() {
 
   const [user] = useAuthState(auth);
   return (
     <div className="App">
-      <header className="App-header">
-        <SignOut />
-      </header>
       <section>
         {user ? <Fwitter /> : <SignIn />}
       </section>

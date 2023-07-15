@@ -1,0 +1,19 @@
+.fweetPost{
+    display: flex;
+    gap: 5px;
+}
+
+.fweetPost img{
+    width: 50px;
+    height: 50px;
+}
+
+#posts{
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.text{
+    word-break: break-word;
+}
