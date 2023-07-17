@@ -11,7 +11,7 @@ function FweetBox(props){
       <div className='fweet'>
       <button className='close' onClick={()=>{props.open(false)}}>X</button>
       <p>Fweet</p>
-      <form>
+      <form className='fweetForm'>
         <textarea id="fweetText" value={formValue} onChange={(e)=>setFormValue(e.target.value)} />
         <button id = "submitFweet" onClick={(e)=>{e.preventDefault(); props.sendFweet(e, formValue, setFormValue)}}>Fweet</button>
       </form>

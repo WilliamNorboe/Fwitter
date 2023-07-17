@@ -1,19 +1,61 @@
 .fweetPost{
     display: flex;
     gap: 5px;
+    border: 1px solid lightslategrey;
 }
 
 .fweetPost img{
     width: 50px;
     height: 50px;
+    border-radius: 100px;
+    margin-top: 15px;
 }
 
 #posts{
     display: flex;
     flex-direction: column;
     width: 500px;
+    gap: 20px;
+    padding: 20px;
+
+    overflow-y: scroll;
 }
 
+#posts::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  
+  #posts::-webkit-scrollbar-track {
+    background: #1e1e24;
+  }
+  
+  #posts::-webkit-scrollbar-thumb {
+    background: #6649b8;
+  }
+
+  
 .text{
     word-break: break-word;
+}
+
+#fweetInfo{
+    padding: 0;
+    margin: 0;
+    /* color: red; */
+}
+
+
+
+.replyBox{
+    display: flex;
+    gap: 5px;
+}
+
+.replyForm{
+}
+
+#replyText{
+  max-width: 400px;
+  width: 400px;
+  height: 50px;
 }

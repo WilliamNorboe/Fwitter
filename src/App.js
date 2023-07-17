@@ -13,6 +13,8 @@ import { signOut } from 'firebase/auth';
 import LeftBar from './components/leftBar.js';
 import RightBar from './components/rightBar';
 import Fweets from './components/fweets';
+import ViewFweetPage from './components/viewFweet';
+
 
 firebase.initializeApp({
   apiKey: "AIzaSyCwclLuSoHn-hy1eQF9_KEDuVuJAmLobkM",
@@ -47,27 +49,49 @@ function SignOut(){
 function Fwitter(){
   const messagesRef = firestore.collection("Fweets");
   const query = messagesRef.orderBy('createdAt', 'desc').limit(25);
-  const [messages] = useCollectionData(query, {idField: 'id'})
-
+  const [messages] = useCollectionData(query);
   const sendFweet = async(e, formValue, setFormValue) =>{
-    const { uid, photoURL} = auth.currentUser;
+    const { email, photoURL} = auth.currentUser;
+    let uid = email.split('@')[0];
     let l = (Date.now().toString(36) + Math.random().toString(36).substr(2));
-    await messagesRef.add({
+    await messagesRef.doc(l).set({
       text: formValue,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
       msgID: l,
-      photoURL
+      photoURL,
+      replies: []
     });
     setFormValue('');
     document.querySelector(".close").click();
   }
 
+  const sendReply = async(e, formValue, setFormValue, msg) =>{
+    const { email, photoURL} = auth.currentUser;
+    let uid = email.split('@')[0];
+    let l = (Date.now().toString(36) + Math.random().toString(36).substr(2));
+    let replies = msg.replies;
+    let reply = {
+      text: formValue,
+      uid,
+      msgID: l,
+      photoURL,
+    };
+    replies.unshift(reply);
+    await firestore.collection("Fweets").doc(msg.msgID).update({replies: replies});
+    setFormValue('');
+  }
+
+  let setFuncs = [];
+  const [viewFweet, setViewFweet] = useState(false);
+  setFuncs.push(setViewFweet);
+  
   return(
     <>
       <div className='middle'>
         <LeftBar user = {auth.currentUser} logout = {SignOut} sendFweet = {sendFweet}/>
-        <Fweets messages = {messages} />
+
+        {viewFweet ? <ViewFweetPage message = {viewFweet} sendReply = {sendReply} /> : <Fweets messages = {messages} setFuncs = {setFuncs} />}
         <RightBar />
       </div>
     </>
