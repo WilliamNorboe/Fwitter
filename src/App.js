@@ -76,11 +76,13 @@ function Fwitter(){
       uid,
       msgID: l,
       photoURL,
+      parent: msg.msgID
     };
     replies.unshift(reply);
     await firestore.collection("Fweets").doc(msg.msgID).update({replies: replies});
     setFormValue('');
   }
+
 
   let setFuncs = [];
   const [viewFweet, setViewFweet] = useState(false);
@@ -91,7 +93,7 @@ function Fwitter(){
       <div className='middle'>
         <LeftBar user = {auth.currentUser} logout = {SignOut} sendFweet = {sendFweet}/>
 
-        {viewFweet ? <ViewFweetPage message = {viewFweet} sendReply = {sendReply} /> : <Fweets messages = {messages} setFuncs = {setFuncs} />}
+        {viewFweet ? <ViewFweetPage message = {viewFweet} sendReply = {sendReply} setFuncs = {setFuncs} /> : <Fweets messages = {messages} setFuncs = {setFuncs} />}
         <RightBar />
       </div>
     </>
@@ -99,7 +101,7 @@ function Fwitter(){
 }
 
 
-function App() {
+const App = ()=> {
 
   const [user] = useAuthState(auth);
   return (
@@ -111,4 +113,10 @@ function App() {
   );
 }
 
+
 export default App;
+export{
+  firebase,
+  auth,
+  firestore
+}

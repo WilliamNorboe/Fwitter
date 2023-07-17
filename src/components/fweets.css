@@ -17,7 +17,7 @@
     width: 500px;
     gap: 20px;
     padding: 20px;
-
+    /* width: 100%; */
     overflow-y: scroll;
 }
 
@@ -41,6 +41,7 @@
 #fweetInfo{
     padding: 0;
     margin: 0;
+    width: 100%;
     /* color: red; */
 }
 
@@ -58,4 +59,12 @@
   max-width: 400px;
   width: 400px;
   height: 50px;
+}
+
+.delete{
+  align-self: flex-start;
+  justify-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 17px;
 }

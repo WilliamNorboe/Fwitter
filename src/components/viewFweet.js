@@ -1,11 +1,39 @@
 import './fweets.css';
 import { useState, useEffect, useRef } from "react";
 
-let setFuncs;
 
+import 'firebase/compat/firestore';
+import {firebase, auth, firestore} from '../App.js';
+
+let setFuncs;
+let cpy;
+
+async function deleteFweet(msg){
+    console.log(msg);
+    let replies = cpy.replies;
+    const test = replies.map(item => {
+        return item.msgID;
+    });
+    let index = test.indexOf(msg.msgID);
+    if(index == -1){
+        return;
+    }
+    cpy.replies.splice(index, 1);
+    await firestore.collection("Fweets").doc(msg.parent).update({replies: cpy.replies});
+    setFuncs[0](cpy);
+}
+
+function deleteButton(msg){
+    if(msg.uid === auth.currentUser.email.split("@")[0]){
+        return <button className='delete' onClick={()=>{deleteFweet(msg)}}>X</button>;
+    }
+    else{
+        return <></>
+    }
+}
 
 function Fweet(props){
-    const { text, uid, photoURL} = props.message;
+    const { text, uid, photoURL, msgID} = props.message;
     // console.log(createdAt);
     return (
     <div className='fweetPost'>
@@ -14,6 +42,7 @@ function Fweet(props){
             <p>{uid}</p>
             {/* <p>{createdAt.seconds * 1000 + createdAt.nanoseconds/1000000}</p> */}
             <p className='text'>{text}</p>
+            {deleteButton(props.message)}
         </div>
     </div>
     )
@@ -26,10 +55,14 @@ const getReplies = (replies) =>{
     }
     return disreplies
 }
+
+
 function ViewFweetPage(props){
     let msg = props.message;
-    console.log(msg.replies[0])
-    let displayReplies = getReplies(msg.replies);
+    cpy = msg;
+    // console.log(msg.replies[0]);
+    setFuncs = props.setFuncs;
+    // let displayReplies = getReplies(msg.replies);
     // setFuncs = props.setFuncs;
     const [formValue, setFormValue] = useState('');
     return(
@@ -43,7 +76,7 @@ function ViewFweetPage(props){
                     </form>
             </div>
             {/* {displayReplies} */}
-            {msg.replies && msg.replies.map(msg => <Fweet key = {msg.msgID} message ={msg}/>)}
+            {msg.replies && msg.replies.map(msg2 => <Fweet key = {msg2.msgID} message ={msg2} />)}
         </div>
     )
 }
