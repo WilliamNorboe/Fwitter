@@ -6,11 +6,10 @@ import 'firebase/compat/firestore';
 import {firebase, auth, firestore} from '../App.js';
 
 let setFuncs;
-let cpy;
+let parent;
 
 async function deleteFweet(msg){
-    console.log(msg);
-    let replies = cpy.replies;
+    let replies = parent.replies;
     const test = replies.map(item => {
         return item.msgID;
     });
@@ -18,13 +17,13 @@ async function deleteFweet(msg){
     if(index == -1){
         return;
     }
-    cpy.replies.splice(index, 1);
-    await firestore.collection("Fweets").doc(msg.parent).update({replies: cpy.replies});
-    setFuncs[0](cpy);
+    parent.replies.splice(index, 1);
+    await firestore.collection("Fweets").doc(msg.parent).update({replies: parent.replies});
+    setFuncs[0](parent);
 }
 
 function deleteButton(msg){
-    if(msg.uid === auth.currentUser.email.split("@")[0]){
+    if(msg.uid === auth.currentUser.email.split("@")[0] && msg != parent){
         return <button className='delete' onClick={()=>{deleteFweet(msg)}}>X</button>;
     }
     else{
@@ -42,24 +41,17 @@ function Fweet(props){
             <p>{uid}</p>
             {/* <p>{createdAt.seconds * 1000 + createdAt.nanoseconds/1000000}</p> */}
             <p className='text'>{text}</p>
-            {deleteButton(props.message)}
         </div>
+        {deleteButton(props.message)}
     </div>
     )
 }
 
-const getReplies = (replies) =>{
-    let disreplies = [];
-    for(let i = replies.length-1; i >= 0; i--){
-        disreplies.push(<Fweet key = {replies[i].msgID} message ={replies[i].msg} />)
-    }
-    return disreplies
-}
 
 
 function ViewFweetPage(props){
-    let msg = props.message;
-    cpy = msg;
+    parent = props.message;
+    // parent = msg;
     // console.log(msg.replies[0]);
     setFuncs = props.setFuncs;
     // let displayReplies = getReplies(msg.replies);
@@ -67,16 +59,16 @@ function ViewFweetPage(props){
     const [formValue, setFormValue] = useState('');
     return(
         <div id = "posts">
-            {<Fweet key = {msg.msgID} message ={msg} />}
+            {<Fweet key = {parent.msgID} message ={parent} />}
             <div className = "replyBox">
                     <p>Reply</p>
                     <form className='replyForm'>
                         <textarea id="replyText" value={formValue} onChange={(e)=>setFormValue(e.target.value)} />
-                        <button id = "submitReply" onClick={(e)=>{e.preventDefault(); props.sendReply(e, formValue, setFormValue, msg)}}>Reply</button>
+                        <button id = "submitReply" onClick={(e)=>{e.preventDefault(); props.sendReply(e, formValue, setFormValue, parent)}}>Reply</button>
                     </form>
             </div>
             {/* {displayReplies} */}
-            {msg.replies && msg.replies.map(msg2 => <Fweet key = {msg2.msgID} message ={msg2} />)}
+            {parent.replies && parent.replies.map(msg => <Fweet key = {msg.msgID} message ={msg} />)}
         </div>
     )
 }

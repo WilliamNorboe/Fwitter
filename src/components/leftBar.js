@@ -2,6 +2,7 @@ import './leftBar.css';
 import { useState, useEffect, useRef } from "react";
 
 
+let setFuncs;
 
 function FweetBox(props){
 
@@ -19,17 +20,22 @@ function FweetBox(props){
     )
   }
 
+function homeClick(){
+  for(let i = 0; i < setFuncs.length; ++i){
+    setFuncs[i](false);
+  }
+}
 
 function LeftBar(props){
 
     const [fweetEdit, setFweetEdit] = useState(false);
 
-
+    setFuncs = props.setFuncs;
     return(
     <div className='leftbar'>
         {fweetEdit ? <FweetBox open = {setFweetEdit} sendFweet = {props.sendFweet} /> : <></>}
         <div className="buttons">
-            <button>Home</button>
+            <button onClick={homeClick}>Home</button>
             <button id = "fweetbtn" onClick={()=>{setFweetEdit(true)}}>Fweet</button>
         </div>
 
