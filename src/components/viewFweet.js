@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 import 'firebase/compat/firestore';
 import {firebase, auth, firestore} from '../App.js';
+import { profileClicked } from './fweets';
 
 let setFuncs;
 let parent;
@@ -36,7 +37,7 @@ function Fweet(props){
     // console.log(createdAt);
     return (
     <div className='fweetPost'>
-        <img src = {photoURL} />
+        <img src = {photoURL} onClick={()=>{profileClicked(uid)}}/>
         <div id = "fweetInfo">
             <p>{uid}</p>
             {/* <p>{createdAt.seconds * 1000 + createdAt.nanoseconds/1000000}</p> */}

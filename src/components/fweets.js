@@ -1,6 +1,8 @@
 import './fweets.css';
 import 'firebase/compat/firestore';
 import {firebase, auth, firestore} from '../App.js';
+import { useState, useEffect, useRef } from "react";
+
 let setFuncs;
 
 
@@ -31,6 +33,43 @@ function deleteButton(ucode, msgID){
     }
 }
 
+async function followUser(uid, follow){
+    let currentUser = auth.currentUser.email.split("@")[0];
+    let followedUsers = (await firestore.collection("users").doc(currentUser).get()).data();
+    let newFollow = (await firestore.collection("users").doc(uid).get()).data();
+    if(follow){
+        newFollow.numFollowers++;
+        followedUsers.followed.push(uid);
+    }
+    else{
+        newFollow.numFollowers--;
+        let index = followedUsers.followed.indexOf(uid);
+        followedUsers.followed.splice(index, 1);
+    }
+    await firestore.collection("users").doc(currentUser).update({followed: followedUsers.followed});
+    await firestore.collection("users").doc(uid).update({numFollowers: newFollow.numFollowers});
+}
+
+function FollowButton(props){
+    let uid = props.uid;
+    const [btn, setBtn] = useState(false);
+    let currentUser = auth.currentUser.email.split("@")[0];
+    if(uid !== currentUser){
+
+        (firestore.collection("users").doc(currentUser).get()).then((result)=>{
+            result = result.data();
+            if(result.followed.indexOf(uid) == -1){
+                setBtn(<button className='follow' onClick={()=>{followUser(uid, true)}}>Follow</button>);
+            }
+            else{
+                setBtn(<button className='follow' onClick={()=>{followUser(uid, false)}}>Unfollow</button>);
+            }
+        });
+        // return <button className='follow' onClick={()=>{followUser(uid)}}>Follow</button>;
+    }
+    return btn;
+}
+
 const viewFweet = (id)=>{
     for(let i = 0; i < setFuncs.length; ++i){
         setFuncs[i](false);
@@ -49,6 +88,8 @@ function Fweet(props){
             {/* <p>{createdAt.seconds * 1000 + createdAt.nanoseconds/1000000}</p> */}
             <p className='text'>{text}</p>
         </div>
+        {/* {FollowButton(uid)} */}
+        <FollowButton uid = {uid} />
         {deleteButton(uid, msgID)}
     </div>
     )
@@ -65,4 +106,7 @@ function Fweets(props){
     )
 }
 
-export default Fweets
+export default Fweets;
+export{
+    profileClicked
+}

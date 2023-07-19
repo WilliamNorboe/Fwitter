@@ -11,7 +11,7 @@
     margin-top: 15px;
 }
 
-#posts{
+#posts, #followed{
     display: flex;
     flex-direction: column;
     width: 500px;
@@ -22,15 +22,15 @@
     overflow-y: scroll;
 }
 
-#posts::-webkit-scrollbar {
+#posts::-webkit-scrollbar,  #followed::-webkit-scrollbar{
     width: 0.5rem;
   }
   
-  #posts::-webkit-scrollbar-track {
+  #posts::-webkit-scrollbar-track, #followed::-webkit-scrollbar-track {
     background: #1e1e24;
   }
   
-  #posts::-webkit-scrollbar-thumb {
+  #posts::-webkit-scrollbar-thumb, #followed::-webkit-scrollbar-thumb {
     background: #6649b8;
   }
 
@@ -74,4 +74,30 @@
 #profileInfo{
   display: flex;
   gap: 10px
+}
+
+.follow{
+  align-self: flex-end;
+  font-size: 15px;
+  background-color: blue;
+  border-radius: 20px;
+  color: white;
+}
+
+#followed{
+  font-size: 20px;
+}
+
+.profile{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.profile img{
+  border-radius: 100px;
+}
+
+.profile div{
+  display: flex;
+  flex-direction: column;
 }

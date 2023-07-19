@@ -1,6 +1,7 @@
 import './leftBar.css';
 import { useState, useEffect, useRef } from "react";
 
+import {firebase, auth, firestore} from '../App.js';
 
 let setFuncs;
 
@@ -26,6 +27,15 @@ function homeClick(){
   }
 }
 
+async function followingClick(){
+  for(let i = 0; i < setFuncs.length; ++i){
+    setFuncs[i](false);
+  }
+  let currentUser = auth.currentUser.email.split("@")[0];
+  currentUser = (await firestore.collection("users").doc(currentUser).get()).data();
+  setFuncs[2](currentUser);
+}
+
 function LeftBar(props){
 
     const [fweetEdit, setFweetEdit] = useState(false);
@@ -36,6 +46,8 @@ function LeftBar(props){
         {fweetEdit ? <FweetBox open = {setFweetEdit} sendFweet = {props.sendFweet} /> : <></>}
         <div className="buttons">
             <button onClick={homeClick}>Home</button>
+            <button onClick={homeClick}>Profile</button>
+            <button onClick={followingClick}>Following</button>
             <button id = "fweetbtn" onClick={()=>{setFweetEdit(true)}}>Fweet</button>
         </div>
 

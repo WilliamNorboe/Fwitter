@@ -15,6 +15,7 @@ import RightBar from './components/rightBar';
 import Fweets from './components/fweets';
 import ViewFweetPage from './components/viewFweet';
 import ViewProfilePage from './components/profile';
+import ViewFollowingPage from './components/following';
 
 
 firebase.initializeApp({
@@ -55,6 +56,8 @@ async function users(usersRef){
     await usersRef.doc(email).set({
       email: email,
       pfp: auth.currentUser.photoURL,
+      followed: [],
+      numFollowers: 0
     });
     return;
   }
@@ -108,9 +111,11 @@ function Fwitter(){
   let setFuncs = [];
   const [viewFweet, setViewFweet] = useState(false);
   const [profile, setProfile] = useState(false);
+  const [followingPage, setFollowingPage] = useState(false);
   setFuncs.push(setViewFweet);
   setFuncs.push(setProfile);
-  
+  setFuncs.push(setFollowingPage);
+
   return(
     <>
       <div className='middle'>
@@ -119,7 +124,10 @@ function Fwitter(){
         {viewFweet ? <ViewFweetPage message = {viewFweet} sendReply = {sendReply} setFuncs = {setFuncs} /> 
         : <>
           {profile ?<ViewProfilePage profile = {profile} messages = {messages} sendReply = {sendReply} setFuncs = {setFuncs} />
+          : <>
+          {followingPage ?<ViewFollowingPage profile = {followingPage} messages = {messages} sendReply = {sendReply} setFuncs = {setFuncs} />
           : <Fweets messages = {messages} setFuncs = {setFuncs} />
+        }</>
         }</> }
         <RightBar />
       </div>
