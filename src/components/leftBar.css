@@ -28,6 +28,11 @@
     gap: 5px;
 }
 
+.leftbar button:hover{
+  border: 2px solid black;
+  border-radius: 30px;
+  background-color: aquamarine;
+}
 .leftbar button{
     font-family: 'Courier New', Courier, monospace;
     border: none;
